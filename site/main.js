@@ -20,6 +20,27 @@
     }, 2400);
   }
 
+  // Theme: system -> light -> dark, remembered per visitor.
+  var btn = document.querySelector('.theme-btn');
+  if (btn) {
+    var modes = ['system', 'light', 'dark'];
+    var names = { system: 'خودکار', light: 'روشن', dark: 'تیره' };
+    var read = function () { try { return localStorage.getItem('theme') || 'system'; } catch (e) { return 'system'; } };
+    var apply = function (mode) {
+      if (mode === 'system') delete document.documentElement.dataset.theme;
+      else document.documentElement.dataset.theme = mode;
+      btn.dataset.mode = mode;
+      btn.setAttribute('aria-label', 'تم: ' + names[mode]);
+      btn.title = 'تم: ' + names[mode];
+    };
+    apply(read());
+    btn.addEventListener('click', function () {
+      var next = modes[(modes.indexOf(btn.dataset.mode) + 1) % modes.length];
+      try { if (next === 'system') localStorage.removeItem('theme'); else localStorage.setItem('theme', next); } catch (e) {}
+      apply(next);
+    });
+  }
+
   var items = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
   function setOpen(item, on) {
     item.querySelector('.faq-btn').setAttribute('aria-expanded', on ? 'true' : 'false');
