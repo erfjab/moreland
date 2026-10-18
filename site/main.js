@@ -20,24 +20,26 @@
     }, 2400);
   }
 
-  // Theme: system -> light -> dark, remembered per visitor.
+  // Theme: follows the device until the visitor picks light or dark; the button only toggles those two.
   var btn = document.querySelector('.theme-btn');
   if (btn) {
-    var modes = ['system', 'light', 'dark'];
-    var names = { system: 'خودکار', light: 'روشن', dark: 'تیره' };
-    var read = function () { try { return localStorage.getItem('theme') || 'system'; } catch (e) { return 'system'; } };
-    var apply = function (mode) {
-      if (mode === 'system') delete document.documentElement.dataset.theme;
-      else document.documentElement.dataset.theme = mode;
+    var sys = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    var saved = function () { try { var m = localStorage.getItem('theme'); return m === 'light' || m === 'dark' ? m : null; } catch (e) { return null; } };
+    var current = function () { return saved() || (sys && sys.matches ? 'dark' : 'light'); };
+    var show = function () {
+      var mode = current();
       btn.dataset.mode = mode;
-      btn.setAttribute('aria-label', 'تم: ' + names[mode]);
-      btn.title = 'تم: ' + names[mode];
+      var label = mode === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تیره';
+      btn.setAttribute('aria-label', label);
+      btn.title = label;
     };
-    apply(read());
+    show();
+    if (sys && sys.addEventListener) sys.addEventListener('change', show);
     btn.addEventListener('click', function () {
-      var next = modes[(modes.indexOf(btn.dataset.mode) + 1) % modes.length];
-      try { if (next === 'system') localStorage.removeItem('theme'); else localStorage.setItem('theme', next); } catch (e) {}
-      apply(next);
+      var next = current() === 'dark' ? 'light' : 'dark';
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      document.documentElement.dataset.theme = next;
+      show();
     });
   }
 

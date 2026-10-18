@@ -4,7 +4,7 @@
 .theme-btn{background:none;border:1px solid transparent;border-radius:8px;width:38px;height:38px;display:grid;place-items:center;color:var(--mute);cursor:pointer;transition:color .2s,border-color .2s}
 .theme-btn:hover{color:var(--ink);border-color:var(--line)}
 .theme-btn svg{grid-area:1/1;display:none}
-.theme-btn[data-mode=system] .i-system,.theme-btn[data-mode=light] .i-light,.theme-btn[data-mode=dark] .i-dark{display:block}
+.theme-btn[data-mode=light] .i-dark,.theme-btn[data-mode=dark] .i-light{display:block}
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--page);color:var(--ink)}
